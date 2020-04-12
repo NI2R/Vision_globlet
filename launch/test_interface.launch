@@ -1,0 +1,9 @@
+<!--
+Copyright (c) 2020, NI2R.
+-->
+<launch>
+    <node name="Talker" pkg="model" type="Template_pub" /> 
+    <node name="InterfaceROS" pkg="ni2r_test" type="interfaceROS.py" output="screen" />
+
+
+</launch>
