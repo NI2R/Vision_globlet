@@ -1,35 +1,56 @@
 #!/usr/bin/env python
 
+#permet de convertir des variable de type ROS en variable que je vais utiliser
+	#Subscriber(nom topic, type variable topic, fonction appele lors d'une maj)
+	#self.pub = rospy.Publisher(nom topic, type variable topic, queue_size=1 par defaut)
+
+
 import sys
 import os
 import rospy
-import testInterface
+import traiteImage
 
 from std_msgs.msg import String as ROS_String
+from sensor_msgs.msg import Image as ROS_Image
+from geometry_msgs.msg import Pose as ROS_Pose
+
 
 class Robot_properties:
 	def __init__(self):
-		self.messageIn = ""
+		self.imageBrut = ROS_Image()
 
-		self.publish_topic = 'ni2r_test_interface'
-		self.subscribe_topic = 'chatter'
+		self.publish_topic = 'positionGoblet' #nom du topic que je publie
+		self.publish_topic_Img = 'imgGoblet'
+		
+		self.subscribe_topic = 'CamGoblet/image_raw' #nom du topic que je veux recuperer
 
-		self.pub = rospy.Publisher(self.publish_topic, ROS_String, queue_size=1)
-		rospy.Subscriber(self.subscribe_topic, ROS_String, self.subscrib)
+		self.pub = rospy.Publisher(self.publish_topic, ROS_Pose, queue_size=1)
+		self.pubImg = rospy.Publisher(self.publish_topic_Img, ROS_Image, queue_size=1)
+		
+		rospy.Subscriber(self.subscribe_topic, ROS_Image, self.subscrib) 
+
+
 
 	def subscrib(self, ros_data):
-		self.messageIn = ros_data
+		self.imageBrut = ros_data #on recupere l'image complet
 
-	def publish(self, message):
-		self.pub.publish(message)
+	def publish(self, posX):
+		Msg = ROS_Pose()
+		Msg.position.x = posX #pb car ici attend float mais nous lui donnons un byte
+		self.pub.publish(Msg)
+
+	def publishImage(self, image):
+		self.pubImg.publish(image)
+
 
 
 def main():
-	rospy.init_node('Test_interface', anonymous=True)
-	tester = testInterface.Tester()
+	rospy.init_node('Traite_Image', anonymous=True)
+	Objtester = traiteImage.Tester() #objet de type objet
+	rospy.sleep(5)
 	while not rospy.is_shutdown():
-		tester.updater()
-		rospy.sleep(1)
+		Objtester.updater()
+		rospy.sleep(0.03)
 
 
 if __name__ ==  '__main__':

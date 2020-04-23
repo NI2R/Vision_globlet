@@ -2,8 +2,20 @@
 Copyright (c) 2020, NI2R.
 -->
 <launch>
-    <node name="Talker" pkg="model" type="Template_pub" /> 
-    <node name="InterfaceROS" pkg="ni2r_test" type="interfaceROS.py" output="screen" />
+<!-- launch test goblet -->
+   <include file="$(find video_stream_opencv)/launch/camera.launch" >
+   		<!-- node name and ros graph name -->
+	  	<arg name="camera_name" value="CamGoblet" />
+	  	<!-- means video device 0, /dev/video0 -->
+	  	<arg name="video_stream_provider" value="0" />
+	  	<!-- set camera fps to (if the device allows) -->
+		<arg name="width" value="1280" />
+		<arg name="height" value="720" />
 
+   </include>
 
+	<node name="interfaceROS" pkg="vision_goblet" type="interfaceROS.py" output="screen" />
+
+      <node name="rviz" pkg="rviz" type="rviz" output="screen" /> <!--Démarrer le visualiseur rviz avec la configuration-->
+ 
 </launch>
