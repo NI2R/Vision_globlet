@@ -8,6 +8,7 @@
 import sys
 import os
 import rospy
+
 import traiteImage
 
 from std_msgs.msg import String as ROS_String
@@ -17,6 +18,7 @@ from geometry_msgs.msg import Pose as ROS_Pose
 
 class Robot_properties:
 	def __init__(self):
+
 		self.imageBrut = ROS_Image()
 
 		self.publish_topic = 'positionGoblet' #nom du topic que je publie
@@ -29,14 +31,13 @@ class Robot_properties:
 		
 		rospy.Subscriber(self.subscribe_topic, ROS_Image, self.subscrib) 
 
-
-
 	def subscrib(self, ros_data):
 		self.imageBrut = ros_data #on recupere l'image complet
 
-	def publish(self, posX):
+	def publish(self, posX, posY): #x sera la position et y la couleur
 		Msg = ROS_Pose()
-		Msg.position.x = posX #pb car ici attend float mais nous lui donnons un byte
+		Msg.position.x = posX #pb car ici attend float mais nous lui donnons un byte				
+		Msg.position.y = posY #pb car ici attend float mais nous lui donnons un byte
 		self.pub.publish(Msg)
 
 	def publishImage(self, image):
